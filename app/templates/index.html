@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset=utf-8>
+    <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,minimal-ui">
+    <meta name=apple-mobile-web-app-capable content=yes>
+    <meta name=apple-mobile-web-app-status-bar-style content=black>
+    <title>Flask advanced template</title>
+    <link rel="shortcut icon" href=/static/favicon.ico>
+    <link href=https://cdn.bootcss.com/material-design-icons/3.0.1/iconfont/material-icons.min.css rel=stylesheet>
+    <link href="https://unpkg.com/vuetify/dist/vuetify.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div id="app">
+      <v-app>
+         <v-toolbar dark app>
+    <v-toolbar-title>Flask RQ demo</v-toolbar-title>
+    <v-spacer></v-spacer>
+    <v-toolbar-items>
+      <v-btn flat>Run Short</v-btn>
+      <v-btn flat>Run Long</v-btn>
+      <v-btn flat>Run Error</v-btn>
+    </v-toolbar-items>
+  </v-toolbar>
+        <v-content>
+          <v-container fluid>
+            <v-data-table
+      v-bind:headers="headers"
+      :items="items"
+      hide-actions
+      class="elevation-1"
+    >
+    <template slot="items" slot-scope="props">
+      <td v-text="props.item.name"></td>
+      <td class="text-xs-right" v-text="props.item.calories"></td>
+      <td class="text-xs-right" v-text="props.item.fat"></td>
+      <td class="text-xs-right" v-text="props.item.carbs"></td>
+      <td class="text-xs-right" v-text="props.item.protein"></td>
+      <td class="text-xs-right" v-text="props.item.sodium"></td>
+      <td class="text-xs-right" v-text="props.item.calcium"></td>
+      <td class="text-xs-right" v-text="props.item.iron"></td>
+    </template>
+  </v-data-table>
+          </v-container>
+        </v-content>
+
+  <v-footer :fixed="true" app>
+    <v-spacer></v-spacer>
+            <span>&copy;2018 kevinqqnj &nbsp;</span>
+        </v-footer>
+
+
+
+      </v-app>
+    </div>
+
+    <script src="https://unpkg.com/vue/dist/vue.min.js"></script>
+    <script src="https://unpkg.com/vuetify/dist/vuetify.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+      new Vue({
+        el: '#app',
+        data: () => ({
+          msg: 'hello',
+          headers: [
+          {
+            text: 'Dessert (100g serving)',
+            align: 'left',
+            sortable: false,
+            value: 'name'
+          },
+          { text: 'Calories', value: 'calories' },
+          { text: 'Fat (g)', value: 'fat' },
+          { text: 'Carbs (g)', value: 'carbs' },
+          { text: 'Protein (g)', value: 'protein' },
+          { text: 'Sodium (mg)', value: 'sodium' },
+          { text: 'Calcium (%)', value: 'calcium' },
+          { text: 'Iron (%)', value: 'iron' }
+        ],
+          items: [
+          {
+            value: false,
+            name: 'Frozen Yogurt',
+            calories: 159,
+            fat: 6.0,
+            carbs: 24,
+            protein: 4.0,
+            sodium: 87,
+            calcium: '14%',
+            iron: '1%'
+          },
+          {
+            value: false,
+            name: 'Ice cream sandwich',
+            calories: 237,
+            fat: 9.0,
+            carbs: 37,
+            protein: 4.3,
+            sodium: 129,
+            calcium: '8%',
+            iron: '1%'
+          }],
+        }),
+        mounted() {
+          axios.get('/user?ID=12345')
+  .then(function (response) {
+    console.log(response);
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+        },
+        methods: {
+        },
+      })
+    </script>
+</body>
+
+</html>
