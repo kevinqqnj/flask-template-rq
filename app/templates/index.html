@@ -32,7 +32,7 @@
             </v-toolbar>
             <v-content>
                 <v-container fluid>
-                    <v-data-table v-bind:headers="headers" :items="items" v-bind:pagination.sync="pagination" :loading="loading" hide-actions class="elevation-1">
+                    <v-data-table v-bind:headers="headers" :items="items" v-bind:pagination.sync="pagination" :loading="loading" class="elevation-1">
                         <template slot="items" slot-scope="props">
                             <td v-for="(col, key, index) in headers" :key="col.value" class="text-xs-right" v-text="props.item[col.value]"></td>
                         </template>
@@ -55,7 +55,8 @@
             msg: 'hello',
             tasks: ['Short task', 'Long task', 'Task with error'],
             pagination: {
-                sortBy: 'start_time'
+                sortBy: 'start_time',
+                descending: true,
             },
             loading: false,
             headers: [{
