@@ -14,107 +14,116 @@
 
 <body>
     <div id="app">
-      <v-app>
-         <v-toolbar dark app>
-    <v-toolbar-title>Flask RQ demo</v-toolbar-title>
-    <v-spacer></v-spacer>
-    <v-toolbar-items>
-      <v-btn flat>Run Short</v-btn>
-      <v-btn flat>Run Long</v-btn>
-      <v-btn flat>Run Error</v-btn>
-    </v-toolbar-items>
-  </v-toolbar>
-        <v-content>
-          <v-container fluid>
-            <v-data-table
-      v-bind:headers="headers"
-      :items="items"
-      hide-actions
-      class="elevation-1"
-    >
-    <template slot="items" slot-scope="props">
-      <td v-text="props.item.name"></td>
-      <td class="text-xs-right" v-text="props.item.calories"></td>
-      <td class="text-xs-right" v-text="props.item.fat"></td>
-      <td class="text-xs-right" v-text="props.item.carbs"></td>
-      <td class="text-xs-right" v-text="props.item.protein"></td>
-      <td class="text-xs-right" v-text="props.item.sodium"></td>
-      <td class="text-xs-right" v-text="props.item.calcium"></td>
-      <td class="text-xs-right" v-text="props.item.iron"></td>
-    </template>
-  </v-data-table>
-          </v-container>
-        </v-content>
-
-  <v-footer :fixed="true" app>
-    <v-spacer></v-spacer>
-            <span>&copy;2018 kevinqqnj &nbsp;</span>
-        </v-footer>
-
-
-
-      </v-app>
+        <v-app>
+            <v-toolbar dark app>
+                <v-toolbar-title>Flask RQ demo</v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-toolbar-items>
+                    <v-menu offset-y>
+                        <v-btn color="primary" slot="activator">Select task to run</v-btn>
+                        <v-list>
+                            <v-list-tile v-for="item in tasks" @click="run_task(item)">
+                                <v-list-tile-title v-text="item"></v-list-tile-title>
+                            </v-list-tile>
+                        </v-list>
+                    </v-menu>
+                    <v-btn @click.native="reset_table">Reset</v-btn>
+                </v-toolbar-items>
+            </v-toolbar>
+            <v-content>
+                <v-container fluid>
+                    <v-data-table v-bind:headers="headers" :items="items" v-bind:pagination.sync="pagination" :loading="loading" hide-actions class="elevation-1">
+                        <template slot="items" slot-scope="props">
+                            <td v-for="(col, key, index) in headers" :key="col.value" class="text-xs-right" v-text="props.item[col.value]"></td>
+                        </template>
+                    </v-data-table>
+                </v-container>
+            </v-content>
+            <v-footer :fixed="true" app>
+                <v-spacer></v-spacer>
+                <span>&copy;2018 kevinqqnj &nbsp;</span>
+            </v-footer>
+        </v-app>
     </div>
-
     <script src="https://unpkg.com/vue/dist/vue.min.js"></script>
     <script src="https://unpkg.com/vuetify/dist/vuetify.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script>
-      new Vue({
+    var vm = new Vue({
         el: '#app',
         data: () => ({
-          msg: 'hello',
-          headers: [
-          {
-            text: 'Dessert (100g serving)',
-            align: 'left',
-            sortable: false,
-            value: 'name'
-          },
-          { text: 'Calories', value: 'calories' },
-          { text: 'Fat (g)', value: 'fat' },
-          { text: 'Carbs (g)', value: 'carbs' },
-          { text: 'Protein (g)', value: 'protein' },
-          { text: 'Sodium (mg)', value: 'sodium' },
-          { text: 'Calcium (%)', value: 'calcium' },
-          { text: 'Iron (%)', value: 'iron' }
-        ],
-          items: [
-          {
-            value: false,
-            name: 'Frozen Yogurt',
-            calories: 159,
-            fat: 6.0,
-            carbs: 24,
-            protein: 4.0,
-            sodium: 87,
-            calcium: '14%',
-            iron: '1%'
-          },
-          {
-            value: false,
-            name: 'Ice cream sandwich',
-            calories: 237,
-            fat: 9.0,
-            carbs: 37,
-            protein: 4.3,
-            sodium: 129,
-            calcium: '8%',
-            iron: '1%'
-          }],
+            msg: 'hello',
+            tasks: ['Short task', 'Long task', 'Task with error'],
+            pagination: {
+                sortBy: 'start_time'
+            },
+            loading: false,
+            headers: [{
+                    text: 'Task name',
+                    align: 'left',
+                    value: 'name'
+                },
+                { text: 'Job Id', value: 'job_id' },
+                { text: 'Status', value: 'status' },
+                { text: 'Result', value: 'result' },
+                { text: 'Start time', value: 'start_time' },
+                { text: 'Finish time', value: 'finish_time' },
+            ],
+            items: [],
         }),
+
         mounted() {
-          axios.get('/user?ID=12345')
-  .then(function (response) {
-    console.log(response);
-  })
-  .catch(function (error) {
-    console.log(error);
-  });
+            let query = setInterval(this.getDataFromApi, 1000);
         },
         methods: {
+            run_task(task) {
+                console.log(task);
+                axios.post('/_run_task', {
+                        task: task,
+                    })
+                    .then((response) => {
+                        console.log('job added success')
+                        this.items.push(response.data.job)
+                    })
+                    .catch(function(error) {
+                        console.log(error);
+                    });
+            },
+            getDataFromApi() {
+                let jobs = this.items
+                if (jobs.length > 0) {
+                    jobs.forEach((item, index, array) => {
+                        if (item.status != 'finished' && item.status != 'failed') {
+                            console.log(item.job_id)
+                            this.getJobs(item.job_id, index)
+                        }
+                    })
+                }
+            },
+            getJobs(job_id, index) {
+                this.loading = true
+                axios.get('/status/' + job_id)
+                    .then((response) => {
+                        this.items.splice(index, 1, response.data.job) // splice will trigger vue refresh
+                        this.loading = false
+                    })
+                    .catch(function(error) {
+                        console.log(error);
+                        this.loading = false
+                    });
+            },
+            reset_table() {
+                this.items.splice(0) // splice will trigger vue refresh
+                return axios.get('/reset')
+                    .then((response) => {
+                        console.log('reset success')
+                    })
+                    .catch(function(error) {
+                        console.log(error);
+                    });
+            },
         },
-      })
+    })
     </script>
 </body>
 

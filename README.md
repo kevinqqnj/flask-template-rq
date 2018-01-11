@@ -1,16 +1,16 @@
 # Flask app template - RQ
 
 > a simple Flask app template for task queue.
-> work for python3
-> Thanks to: Miguel Grinberg <Flask Web Development>
+> working with python3
+> Thanks to: Benjamin Bertrand https://beenje.github.io/blog/posts/running-background-tasks-with-flask-and-rq/
 
-For advanced Flask template, check here: https://github.com/kevinqqnj/flask-template-advanced
+It's based on a simple Flask template, check here: https://github.com/kevinqqnj/flask-template-simple
 
 ## Features:
-- configurations in `/config.py`
-- Flask_Script: manage application, deployment, command line
-- Blueprint for main and api, easy for expansion
-
+- Simple but full struct of Flask template to support RQ
+- integrated with RQ, redis
+- use Vue.js as frontend (you can replace as whatever frontend you like)
+- frontend shows dashboard of queued tasks
 
 ## Install
 
@@ -25,6 +25,10 @@ pip3 install -r requirements.txt
 
 ## Start up
 ```
+# start Redis server
+redis-server &
+python manage.py runworker
+# open anther terminal
 python manage.py runserver
 ```
 Bingo! Check app in your web browser at: http://localhost:5000
@@ -43,7 +47,8 @@ refer to: https://devcenter.heroku.com/articles/getting-started-with-python
 For production app, you can easily expand functions as you wish, such as:
 - Flask_Compress
 - Flask_Cache
-- Flask_Redis
+- Flask_Admin
+- Flask_Security
 - [flask-template-advanced](https://github.com/kevinqqnj/flask-template-advanced)
 
 > For a detailed explanation on how things work, check out the [guide (CHN)](https://www.jianshu.com/p/f37871e31231).
