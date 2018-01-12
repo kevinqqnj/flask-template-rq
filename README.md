@@ -8,6 +8,8 @@
 
 ![snapshot](rq_snapshot.png "snapshot")
 
+Live Demo: https://flaskrq.herokuapp.com/
+
 It's based on a simple Flask template, check here: https://github.com/kevinqqnj/flask-template-simple
 
 ## Features:
