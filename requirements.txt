@@ -3,5 +3,4 @@ Flask-Cache=0.13.1
 Flask-Redis=0.3.0
 Flask-Script==2.0.5
 gunicorn==19.6.0
-psycopg2==2.6.1
 rq==0.10.0

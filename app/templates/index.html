@@ -19,7 +19,7 @@
                 <v-toolbar-title>Flask RQ demo</v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-toolbar-items>
-                    <v-menu offset-y>
+                    <v-menu open-on-hover bottom offset-y>
                         <v-btn color="primary" slot="activator">Select task to run</v-btn>
                         <v-list>
                             <v-list-tile v-for="item in tasks" @click="run_task(item)">
