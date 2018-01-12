@@ -44,7 +44,7 @@ pip3 install -r requirements.txt
 ```
 
 Set redis server address in `/config.py`, default is:
-`REDISTOGO_URL = os.getenv('REDIS_URL', 'redis://localhost:6379')`
+`REDISTOGO_URL = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')`
 
 
 ## Start up
@@ -63,6 +63,7 @@ ready for deploy to [Heroku](https://www.heroku.com)
 `Procfile`, `heroku.sh` and `runtime.txt` are included. It will use one dyno to run both worker and http server.
 ```
 create app in heroku
+choose "REDISTOGO" or "Heroku REDIS" from resource
 git push to heroku
 configure env. variables
 ```
