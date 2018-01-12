@@ -29,7 +29,7 @@ class Config:
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_RECORD_QUERIES = True
     REDISTOGO_URL = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
-    REDIS_URL = os.getenv('REDIS_URL', 'redis://localhost:6379')
+    REDIS_URL = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
     QUEUES = ['default']
     TASKS = ['Short task', 'Long task', 'Task raises error']
     MAX_TIME_TO_WAIT = 10
