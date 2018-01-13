@@ -1,6 +1,6 @@
 # Flask app template - RQ
 
-> a simple Flask app template for task queue.
+> a simple Flask app template for Redis task queue.
 
 > working with python3. 
 
@@ -13,7 +13,7 @@ Live Demo: https://flaskrq.herokuapp.com/
 It's based on a simple Flask template, check here: https://github.com/kevinqqnj/flask-template-simple
 
 ## Features:
-- Simple but full struct of Flask template to support RQ
+- Simple but full structured Flask template to support RQ (Redis Queue)
 - integrated with RQ, redis
 - use Vue.js as frontend (you can replace as whatever frontend you like)
 - frontend shows dashboard of queued tasks

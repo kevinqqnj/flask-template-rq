@@ -6,10 +6,11 @@
     <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,minimal-ui">
     <meta name=apple-mobile-web-app-capable content=yes>
     <meta name=apple-mobile-web-app-status-bar-style content=black>
-    <title>Flask advanced template</title>
+    <title>Flask RQ template</title>
     <link rel="shortcut icon" href=/static/favicon.ico>
     <link href=https://cdn.bootcss.com/material-design-icons/3.0.1/iconfont/material-icons.min.css rel=stylesheet>
-    <link href="https://unpkg.com/vuetify/dist/vuetify.min.css" rel="stylesheet">
+    <!-- <link href="https://cdn.bootcss.com/vuetify/1.0.0-beta.3/vuetify.min.css" rel="stylesheet"> -->
+    <link href="/static/css/vuetify.min.css" rel="stylesheet">
 </head>
 
 <body>
@@ -34,7 +35,7 @@
                 <v-container fluid>
                     <v-data-table v-bind:headers="headers" :items="items" v-bind:pagination.sync="pagination" :loading="loading" class="elevation-1">
                         <template slot="items" slot-scope="props">
-                            <td v-for="(col, key, index) in headers" :key="col.value" class="text-xs-right" v-text="props.item[col.value]"></td>
+                            <td v-for="(col, key, index) in headers" :key="col.value" class="text-xs-right" v-html="status_format(props.item[col.value])"></td>
                         </template>
                     </v-data-table>
                 </v-container>
@@ -45,9 +46,10 @@
             </v-footer>
         </v-app>
     </div>
-    <script src="https://unpkg.com/vue/dist/vue.min.js"></script>
-    <script src="https://unpkg.com/vuetify/dist/vuetify.min.js"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.bootcss.com/vue/2.5.13/vue.min.js"></script>
+    <script src="/static/js/vuetify.min.js"></script>
+    <!-- <script src="https://unpkg.com/vuetify/dist/vuetify.min.js"></script> -->
+    <script src="https://cdn.bootcss.com/axios/0.17.1/axios.min.js"></script>
     <script>
     var vm = new Vue({
         el: '#app',
@@ -72,11 +74,24 @@
             ],
             items: [],
         }),
-
         mounted() {
-            let query = setInterval(this.getDataFromApi, 1000);
+            let query = setInterval(this.refresh_jobs, 1000);
         },
         methods: {
+            status_format(para) {
+                let status_html = ''
+                switch (para) {
+                    case 'failed':
+                        status_html = '<i title="failed" class="material-icons icon red--text">error</i>'
+                        break;
+                    case 'finished':
+                        status_html = '<i title="finished" class="material-icons icon green--text">check_circle</i>'
+                        break;
+                    default:
+                        return para;
+                }
+                return status_html;
+            },
             run_task(task) {
                 console.log(task);
                 axios.post('/_run_task', {
@@ -90,18 +105,18 @@
                         console.log(error);
                     });
             },
-            getDataFromApi() {
+            refresh_jobs() {
                 let jobs = this.items
                 if (jobs.length > 0) {
                     jobs.forEach((item, index, array) => {
                         if (item.status != 'finished' && item.status != 'failed') {
                             console.log(item.job_id)
-                            this.getJobs(item.job_id, index)
+                            this.get_job_from_api(item.job_id, index)
                         }
                     })
                 }
             },
-            getJobs(job_id, index) {
+            get_job_from_api(job_id, index) {
                 this.loading = true
                 axios.get('/status/' + job_id)
                     .then((response) => {
